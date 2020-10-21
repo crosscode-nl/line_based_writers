@@ -29,11 +29,34 @@ namespace crosscode::line_based_writers {
         sink_type& sink() { return sink_; }
     };
 
+    template<typename Tline_based_string_sink>
+    class batch_sink {
+    public:
+        using sink_type = Tline_based_string_sink;
+    private:
+        sink_type sink_;
+    public:
+        template <typename ...Args>
+        explicit batch_sink(Args&&... args) : sink_{std::forward<Args>(args)...} {}
+        batch_sink() = default;
+        batch_sink(batch_sink<sink_type>&&) noexcept = default;
+        batch_sink(const batch_sink<sink_type>&) noexcept = delete;
+        batch_sink<sink_type>&operator=(const batch_sink<sink_type>&) = delete;
 
-    template<typename Tline_based_protocol_sink>
+        template<typename Iter>
+        void operator()(Iter b,Iter e) {
+            auto emit_to_sink = [this](const auto& item) {
+                sink_(item);
+            };
+            std::for_each(b,e,emit_to_sink);
+        }
+        sink_type& sink() { return sink_; }
+    };
+
+    template<typename Tline_based_iterator_sink>
     class line_buffer {
     public:
-        using sink_type = Tline_based_protocol_sink;
+        using sink_type = Tline_based_iterator_sink;
     private:
         std::size_t buffer_size_;
         sink_type sink_;
@@ -49,17 +72,10 @@ namespace crosscode::line_based_writers {
 
         template<typename Tline>
         void operator()(Tline &&line) {
-            if (buffer_size_<=1) {
-                sink_(std::forward<Tline>(line));
-            } else {
-                buffer_.emplace_back(std::forward<Tline>(line));
-                if (buffer_.size()==buffer_size_) {
-                    auto emit_to_sink = [this](const std::string& s){
-                        sink_(s);
-                    };
-                    std::for_each(begin(buffer_),end(buffer_),emit_to_sink);
-                    buffer_.clear();
-                }
+            buffer_.emplace_back(std::forward<Tline>(line));
+            if (buffer_.size()==buffer_size_) {
+                sink_(begin(buffer_),end(buffer_));
+                buffer_.clear();
             }
         }
 
