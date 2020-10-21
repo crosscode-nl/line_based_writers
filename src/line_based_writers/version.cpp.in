@@ -1,0 +1,8 @@
+#include "@PROJECT_NAME@/version.h"
+
+using namespace std::literals;
+
+std::string_view version() {
+constexpr std::string_view version_value = "@CMAKE_PROJECT_VERSION@"sv;
+return version_value;
+}

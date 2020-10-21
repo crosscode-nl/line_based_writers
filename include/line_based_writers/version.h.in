@@ -1,0 +1,9 @@
+#ifndef @PROJECT_NAME_UPPER@_VERSION_H
+#define @PROJECT_NAME_UPPER@_VERSION_H
+#include <string_view>
+
+/// Get the semver version of this library. See: https://www.semver.org
+/// \return A std::string_view containing the a semver formatted version of this library
+std::string_view version();
+
+#endif //${PROJECT_NAME_UPPER}_VERSION_H
