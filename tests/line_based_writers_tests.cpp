@@ -36,4 +36,24 @@ TEST_SUITE("Line based writers") {
            REQUIRE("This is a line\n"==lb.sink().sink().str());
         }
     }
+    TEST_CASE("Can create line buffer of 2") {
+        lbw::line_buffer<stringstream_stream_writer> lb{2u};
+        SUBCASE("Can write line to line buffer, but is not outputted to sink yet") {
+            lb("line 1");
+            REQUIRE(""==lb.sink().sink().str());
+            SUBCASE("Can write another line to line buffer, but is outputted to sink") {
+                lb("line 2");
+                REQUIRE("line 1\nline 2\n"==lb.sink().sink().str());
+                SUBCASE("Can write another line to line buffer, but is not outputted to sink yet") {
+                    lb("line 3");
+                    REQUIRE("line 1\nline 2\n"==lb.sink().sink().str());
+                    SUBCASE("Can write another line to line buffer, but is outputted to sink") {
+                        lb("line 4");
+                        REQUIRE("line 1\nline 2\nline 3\nline 4\n" == lb.sink().sink().str());
+                    }
+                }
+            }
+
+        }
+    }
 }

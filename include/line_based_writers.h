@@ -2,6 +2,8 @@
 #define LINE_BASED_WRITERS_LINE_BASED_WRITERS_H
 
 #include "line_based_writers/version.h"
+#include <vector>
+#include <algorithm>
 
 namespace crosscode::line_based_writers {
 
@@ -35,6 +37,7 @@ namespace crosscode::line_based_writers {
     private:
         std::size_t buffer_size_;
         sink_type sink_;
+        std::vector<std::string> buffer_;
     public:
         template <typename Tbuffer_size, typename ...Args>
         explicit line_buffer(Tbuffer_size buffer_size, Args&&... args) : buffer_size_{buffer_size}, sink_{std::forward<Args>(args)...} {}
@@ -46,7 +49,18 @@ namespace crosscode::line_based_writers {
 
         template<typename Tline>
         void operator()(Tline &&line) {
-            sink_(std::forward<Tline>(line));
+            if (buffer_size_<=1) {
+                sink_(std::forward<Tline>(line));
+            } else {
+                buffer_.emplace_back(std::forward<Tline>(line));
+                if (buffer_.size()==buffer_size_) {
+                    auto emit_to_sink = [this](const std::string& s){
+                        sink_(s);
+                    };
+                    std::for_each(begin(buffer_),end(buffer_),emit_to_sink);
+                    buffer_.clear();
+                }
+            }
         }
 
         sink_type& sink() { return sink_; }
