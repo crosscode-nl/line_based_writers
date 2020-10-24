@@ -4,6 +4,8 @@
 #include "line_based_writers/version.h"
 #include <vector>
 #include <algorithm>
+#include <memory>
+#include <mutex>
 
 namespace crosscode::line_based_writers {
 
@@ -29,28 +31,31 @@ namespace crosscode::line_based_writers {
         sink_type& sink() { return sink_; }
     };
 
-    template<typename Tline_based_string_sink>
-    class batch_sink {
+    template<typename Tstream_factory>
+    class batch_stream_writer {
     public:
-        using sink_type = Tline_based_string_sink;
+        using stream_factory_type = Tstream_factory;
     private:
-        sink_type sink_;
+        stream_factory_type stream_factory_;
     public:
         template <typename ...Args>
-        explicit batch_sink(Args&&... args) : sink_{std::forward<Args>(args)...} {}
-        batch_sink() = default;
-        batch_sink(batch_sink<sink_type>&&) noexcept = default;
-        batch_sink(const batch_sink<sink_type>&) noexcept = delete;
-        batch_sink<sink_type>&operator=(const batch_sink<sink_type>&) = delete;
+        explicit batch_stream_writer(Args&&... args) : stream_factory_{std::forward<Args>(args)...} {}
+        batch_stream_writer() = default;
+        batch_stream_writer(batch_stream_writer<stream_factory_type>&&) noexcept = default;
+        batch_stream_writer(const batch_stream_writer<stream_factory_type>&) noexcept = delete;
+        batch_stream_writer<stream_factory_type>&operator=(const batch_stream_writer<stream_factory_type>&) = delete;
 
         template<typename Iter>
         void operator()(Iter b,Iter e) {
-            auto emit_to_sink = [this](const auto& item) {
-                sink_(item);
+            stream_factory_.begin();
+            auto write_line_to_stream = [this](const auto& item) {
+                stream_factory_.current() << item << "\n";
             };
-            std::for_each(b,e,emit_to_sink);
+            std::for_each(b,e,write_line_to_stream);
+            stream_factory_.commit();
         }
-        sink_type& sink() { return sink_; }
+
+        stream_factory_type& factory() { return stream_factory_; }
     };
 
     template<typename Tline_based_iterator_sink>
@@ -79,7 +84,42 @@ namespace crosscode::line_based_writers {
             }
         }
 
+        void emit() {
+            sink_(begin(buffer_),end(buffer_));
+            buffer_.clear();
+        }
+
         sink_type& sink() { return sink_; }
+    };
+
+    template<typename Tline_based_iterator_sink>
+    class line_buffer_ts {
+    public:
+        using sink_type = Tline_based_iterator_sink;
+    private:
+        line_buffer<Tline_based_iterator_sink> lb_;
+        std::unique_ptr<std::mutex> mutex_;
+    public:
+        template <typename Tbuffer_size, typename ...Args>
+        explicit line_buffer_ts(Tbuffer_size buffer_size, Args&&... args) : lb_{buffer_size, std::forward<Args>(args)...}, mutex_{std::make_unique<std::mutex>()} {}
+        template <typename Tbuffer_size>
+        explicit line_buffer_ts(Tbuffer_size buffer_size) : lb_{buffer_size}, mutex_{std::make_unique<std::mutex>()} {}
+        line_buffer_ts(line_buffer_ts<sink_type>&&) noexcept = default;
+        line_buffer_ts(const line_buffer_ts<sink_type>&) noexcept = delete;
+        line_buffer_ts<sink_type>&operator=(const line_buffer<sink_type>&) = delete;
+
+        template<typename Tline>
+        void operator()(Tline &&line) {
+            std::scoped_lock lock{*mutex_};
+            lb_(line);
+        }
+
+        void emit() {
+            std::scoped_lock lock{*mutex_};
+            lb_.emit();
+        }
+
+        sink_type& sink() { return lb_.sink(); }
     };
 
 }
