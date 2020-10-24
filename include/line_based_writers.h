@@ -31,31 +31,32 @@ namespace crosscode::line_based_writers {
         sink_type& sink() { return sink_; }
     };
 
-    template<typename Tstream_factory>
+    template<typename Tline_writer_factory>
     class batch_stream_writer {
     public:
-        using stream_factory_type = Tstream_factory;
+        using line_writer_factory = Tline_writer_factory;
     private:
-        stream_factory_type stream_factory_;
+        line_writer_factory line_writer_factory_;
     public:
         template <typename ...Args>
-        explicit batch_stream_writer(Args&&... args) : stream_factory_{std::forward<Args>(args)...} {}
+        explicit batch_stream_writer(Args&&... args) : line_writer_factory_{std::forward<Args>(args)...} {}
         batch_stream_writer() = default;
-        batch_stream_writer(batch_stream_writer<stream_factory_type>&&) noexcept = default;
-        batch_stream_writer(const batch_stream_writer<stream_factory_type>&) noexcept = delete;
-        batch_stream_writer<stream_factory_type>&operator=(const batch_stream_writer<stream_factory_type>&) = delete;
+        batch_stream_writer(batch_stream_writer<line_writer_factory>&&) noexcept = default;
+        batch_stream_writer(const batch_stream_writer<line_writer_factory>&) noexcept = delete;
+        batch_stream_writer<line_writer_factory>&operator=(const batch_stream_writer<line_writer_factory>&) = delete;
 
         template<typename Iter>
         void operator()(Iter b,Iter e) {
-            stream_factory_.begin();
+            line_writer_factory_.begin();
             auto write_line_to_stream = [this](const auto& item) {
-                stream_factory_.current() << item << "\n";
+                line_writer_factory_(std::forward<decltype(item)>(item));
             };
             std::for_each(b,e,write_line_to_stream);
-            stream_factory_.commit();
+
+            line_writer_factory_.commit();
         }
 
-        stream_factory_type& factory() { return stream_factory_; }
+        line_writer_factory& factory() { return line_writer_factory_; }
     };
 
     template<typename Tline_based_iterator_sink>

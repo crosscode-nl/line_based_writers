@@ -14,6 +14,11 @@ class string_stream_factory {
         ss_.str("");
     }
 
+    template<typename Tline>
+    void operator()(Tline &&line) {
+        ss_ << std::forward<Tline>(line) << "\n";
+    }
+
     std::stringstream& current() {
         return ss_;
     }
