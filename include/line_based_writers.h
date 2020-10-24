@@ -24,7 +24,7 @@ namespace crosscode::line_based_writers {
         stream_writer<sink_type>&operator=(const stream_writer<sink_type>&) = delete;
 
         template<typename Tline>
-        void operator()(Tline &&line) {
+        void write(Tline &&line) {
             sink_ << std::forward<Tline>(line) << "\n";
         }
 
@@ -46,10 +46,10 @@ namespace crosscode::line_based_writers {
         batch_stream_writer<line_writer_factory>&operator=(const batch_stream_writer<line_writer_factory>&) = delete;
 
         template<typename Iter>
-        void operator()(Iter b,Iter e) {
+        void write(Iter b,Iter e) {
             line_writer_factory_.begin();
             auto write_line_to_stream = [this](const auto& item) {
-                line_writer_factory_(std::forward<decltype(item)>(item));
+                line_writer_factory_.write(std::forward<decltype(item)>(item));
             };
             std::for_each(b,e,write_line_to_stream);
 
@@ -77,10 +77,10 @@ namespace crosscode::line_based_writers {
         line_buffer<sink_type>&operator=(const line_buffer<sink_type>&) = delete;
 
         template<typename Tline>
-        void operator()(Tline &&line) {
+        void write(Tline &&line) {
             buffer_.emplace_back(std::forward<Tline>(line));
             if (buffer_.size()==buffer_size_) {
-                sink_(begin(buffer_),end(buffer_));
+                sink_.write(begin(buffer_),end(buffer_));
                 buffer_.clear();
             }
         }
@@ -110,9 +110,9 @@ namespace crosscode::line_based_writers {
         line_buffer_ts<sink_type>&operator=(const line_buffer<sink_type>&) = delete;
 
         template<typename Tline>
-        void operator()(Tline &&line) {
+        void write(Tline &&line) {
             std::scoped_lock lock{*mutex_};
-            lb_(line);
+            lb_.write(line);
         }
 
         void emit() {
