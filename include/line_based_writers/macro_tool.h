@@ -10,6 +10,10 @@
 
 namespace crosscode::line_based_writers {
 
+    /// Quick and dirty macro tool.
+    /// lexes an input string into strings and macros
+    /// On a render call each handler registered with register_macro is called to generate a string to replace
+    /// the macro with.
     class macro_tool {
     private:
         struct string_token : public std::string {

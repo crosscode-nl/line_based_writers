@@ -30,7 +30,7 @@ list(APPEND ${PROJECT_NAME}_SRC
         ${CMAKE_CURRENT_BINARY_DIR}/src/${PROJECT_NAME}/version.cpp
         )
 
-add_library(${PROJECT_NAME} ${${PROJECT_NAME}_HEADERS} ${${PROJECT_NAME}_SRC})
+add_library(${PROJECT_NAME} ${${PROJECT_NAME}_HEADERS} ${${PROJECT_NAME}_SRC} src/line_based_writers/file_stream_factory.cpp)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
