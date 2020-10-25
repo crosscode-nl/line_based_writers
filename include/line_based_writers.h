@@ -133,6 +133,9 @@ namespace crosscode::line_based_writers {
         }
     };
 
+    using segmented_line_based_file_writer = line_buffer<batch_stream_writer<file_stream_factory>>;
+    using segmented_line_based_file_writer_ts = line_buffer_ts<batch_stream_writer<file_stream_factory>>;
+
 }
 
 #endif //LINE_BASED_WRITERS_LINE_BASED_WRITERS_H
