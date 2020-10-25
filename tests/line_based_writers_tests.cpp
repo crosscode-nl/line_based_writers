@@ -5,8 +5,6 @@
 namespace lbw = crosscode::line_based_writers;
 using namespace std::literals;
 
-using stringstream_stream_writer = lbw::stream_writer<std::stringstream>;
-
 class string_stream_factory {
     std::stringstream ss_;
     public:
@@ -29,10 +27,11 @@ class string_stream_factory {
 
 };
 
+using stringstream_stream_writer = lbw::stream_writer<std::stringstream>;
 using batch_stream_writer = lbw::line_buffer<lbw::batch_stream_writer<string_stream_factory>>;
 using batch_stream_writer_ts = lbw::line_buffer_ts<lbw::batch_stream_writer<string_stream_factory>>;
 
-TEST_SUITE("Line based writers") {
+TEST_SUITE("Line based writers tests") {
     TEST_CASE("Can create stream writer with header") {
         stringstream_stream_writer sw("some header\n",std::ios_base::app | std::ios_base::out);
         SUBCASE("Can write line to stream_writer") {

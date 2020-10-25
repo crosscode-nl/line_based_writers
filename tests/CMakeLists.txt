@@ -8,6 +8,8 @@ list(APPEND ${PROJECT_NAME}_SRC
         main.cpp
         version_tests.cpp
         line_based_writers_tests.cpp
+        file_stream_factory_tests.cpp
+        macro_tool_tests.cpp
 )
 
 list(APPEND ${PROJECT_NAME}_INCLUDE)

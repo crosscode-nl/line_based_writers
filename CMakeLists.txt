@@ -19,11 +19,14 @@ configure_file(src/${PROJECT_NAME}/version.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/sr
 configure_file(include/${PROJECT_NAME}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
 list(APPEND ${PROJECT_NAME}_HEADERS
+        include/${PROJECT_NAME}/macro_tool.h
         include/${PROJECT_NAME}.h
+        include/${PROJECT_NAME}/file_stream_factory.h
         ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h
         )
 
 list(APPEND ${PROJECT_NAME}_SRC
+        src/${PROJECT_NAME}/macro_tool.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/src/${PROJECT_NAME}/version.cpp
         )
 

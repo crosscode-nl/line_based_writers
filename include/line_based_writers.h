@@ -2,6 +2,8 @@
 #define LINE_BASED_WRITERS_LINE_BASED_WRITERS_H
 
 #include "line_based_writers/version.h"
+#include "line_based_writers/macro_tool.h"
+#include "line_based_writers/file_stream_factory.h"
 #include <vector>
 #include <algorithm>
 #include <memory>
@@ -86,11 +88,15 @@ namespace crosscode::line_based_writers {
         }
 
         void emit() {
-            sink_(begin(buffer_),end(buffer_));
+            sink_.write(begin(buffer_),end(buffer_));
             buffer_.clear();
         }
 
         sink_type& sink() { return sink_; }
+
+        ~line_buffer() {
+            emit();
+        }
     };
 
     template<typename Tline_based_iterator_sink>
@@ -121,6 +127,10 @@ namespace crosscode::line_based_writers {
         }
 
         sink_type& sink() { return lb_.sink(); }
+
+        ~line_buffer_ts() {
+            emit();
+        }
     };
 
 }
