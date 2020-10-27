@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8.2)
-project(tests
+project(line_base_writers_tests
         VERSION 0.1.0
         LANGUAGES C CXX
         )
@@ -9,7 +9,6 @@ list(APPEND ${PROJECT_NAME}_SRC
         version_tests.cpp
         line_based_writers_tests.cpp
         file_stream_factory_tests.cpp
-        macro_tool_tests.cpp
 )
 
 list(APPEND ${PROJECT_NAME}_INCLUDE)

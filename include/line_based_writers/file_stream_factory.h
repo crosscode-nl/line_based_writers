@@ -14,10 +14,20 @@
 
 namespace crosscode::line_based_writers {
 
+    struct macro_handler {
+        std::size_t counter_;
+        static void begin_render();
+        void done_render();
+        [[nodiscard]]
+        std::string handle_counter(std::string_view macro_param) const;
+        explicit macro_handler(std::size_t counter);
+        [[nodiscard]]
+        std::string handle(std::string_view macro_name, std::string_view macro_param) const ;
+    };
+
     class file_name_generator {
     private:
-        macro_tool macro_generator_;
-        std::size_t counter_;
+        macro_tool::macro_render_engine<macro_handler> macro_generator_;
     public:
         explicit file_name_generator(std::string_view filename_tpl,std::size_t counter=0);
 
