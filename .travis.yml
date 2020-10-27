@@ -121,8 +121,8 @@ script:
   - cd build
   - cmake ..
   - make VERBOSE=1
-  - tests/tests
+  - tests/line_based_writers_tests
 branches:
   only:
-    - master
+    - main
     - develop

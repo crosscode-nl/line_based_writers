@@ -20,5 +20,5 @@ notifications:
     on_build_status_changed: true
 branches:
   only:
-    - master
+    - main
     - develop

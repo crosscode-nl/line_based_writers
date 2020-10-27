@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8.2)
 
-project(examples LANGUAGES C CXX)
+project(line_based_writers_examples LANGUAGES C CXX)
 
 file(GLOB EXAMPLES_SRC "example??.cpp")
 
