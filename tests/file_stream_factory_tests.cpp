@@ -81,5 +81,11 @@ TEST_SUITE("File stream factory tests") {
             REQUIRE("/tmp-0001/test-0001.txt" == fng.generate());
         }
     }
+    TEST_CASE("Can create file_name_generator with template and retrieve current year."){
+        lbw::file_name_generator fng("/tmp/test-%YEAR%.txt");
+    }
+    TEST_CASE("Can create file_name_generator with template and retrieve current year."){
+        lbw::file_name_generator fng("/tmp/test-%MONTH%.txt");
+    }
 }
 

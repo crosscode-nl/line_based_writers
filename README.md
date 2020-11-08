@@ -9,7 +9,10 @@ CHANGE TO CORRECT REPO:
 
 ## Introduction
 
-line_based_writers 
+Line based writers provide template classes for writing lines from [influxdblpexporter](https://github.com/crosscode-nl/influxdblpexporter) to files. 
+These template classes are also intended for use with other line based protocols and exporters. 
+
+It supports writing to files and automatically segmenting files based on line count. File name generation is base on templates. 
 
 ## Installation
 
