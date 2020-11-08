@@ -2,14 +2,6 @@
 #define LINE_BASED_WRITERS_FILE_STREAM_FACTORY_H
 
 #include <fstream>
-#include <variant>
-#include <algorithm>
-#include <atomic>
-#include <vector>
-#include <numeric>
-#include <algorithm>
-#include <functional>
-#include <map>
 #include "macro_tool.h"
 #include <chrono>
 #include <charconv>

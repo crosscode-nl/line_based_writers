@@ -25,7 +25,6 @@ list(APPEND ${PROJECT_NAME}_HEADERS
         )
 
 list(APPEND ${PROJECT_NAME}_SRC
-        src/line_based_writers/file_stream_factory.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/src/${PROJECT_NAME}/version.cpp
         )
 

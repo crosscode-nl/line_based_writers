@@ -8,8 +8,13 @@
 #include <memory>
 #include <mutex>
 
+/// crosscode::line_based_writers namespace provides line based writers for use with exporters for
+/// https://github.com/crosscode-nl/simple_instruments like https://github.com/crosscode-nl/influxdblpexporter
 namespace crosscode::line_based_writers {
 
+    /// A stream_writer that can be used by https://github.com/crosscode-nl/influxdblpexporter
+    /// This is used to write to a single stream.
+    /// \tparam Tstream_sink The stream to write to.
     template<typename Tstream_sink>
     class stream_writer {
     public:
@@ -32,6 +37,9 @@ namespace crosscode::line_based_writers {
         sink_type& sink() { return sink_; }
     };
 
+    /// batch_stream_writer writes batches of data to a stream.
+    /// \tparam Tline_writer_factory An implementation of a line_writer_factory. file_stream_factory is the
+    /// implementation we provide.
     template<typename Tline_writer_factory>
     class batch_stream_writer {
     public:
@@ -60,6 +68,9 @@ namespace crosscode::line_based_writers {
         line_writer_factory& factory() { return line_writer_factory_; }
     };
 
+    /// A line_buffer that can be used by https://github.com/crosscode-nl/influxdblpexporter
+    /// This is used to buffer writes to a stream.
+    /// \tparam Tline_based_iterator_sink The sink to write to when the buffer is emitted.
     template<typename Tline_based_iterator_sink>
     class line_buffer {
     public:
@@ -98,6 +109,8 @@ namespace crosscode::line_based_writers {
         }
     };
 
+    /// line_buffer_ts is a thread safe wrapper around line_buffer
+    /// \tparam Tline_based_iterator_sink The sink to write to when the buffer is emitted.
     template<typename Tline_based_iterator_sink>
     class line_buffer_ts {
     public:
