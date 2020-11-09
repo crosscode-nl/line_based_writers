@@ -1,9 +1,8 @@
 # line_based_writers
-[![GitHub version](https://badge.fury.io/gh/crosscode-nl%line_based_writers.svg)](https://badge.fury.io/gh/crosscode-nl%line_based_writers)
+[![GitHub version](https://badge.fury.io/gh/crosscode-nl%2Fline_based_writers.svg)](https://badge.fury.io/gh/crosscode-nl%2Fline_based_writers)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/crosscode-nl/line_based_writers.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/crosscode-nl/line_based_writers/context:cpp)
 [![Build Status](https://travis-ci.com/crosscode-nl/line_based_writers.svg?branch=main)](https://travis-ci.com/crosscode-nl/line_based_writers) 
-CHANGE TO CORRECT REPO:
-[![Build status](https://ci.appveyor.com/api/projects/status/gtfghv1lfo1ww3th?svg=true)](https://ci.appveyor.com/project/crosscode-nl/line_based_writers) 
+[![Build status](https://ci.appveyor.com/api/projects/status/hcvtjdkwkpfjtj22?svg=true)](https://ci.appveyor.com/project/crosscode-nl/line-based-writers) 
 [![Standard](https://img.shields.io/badge/c%2B%2B-17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
