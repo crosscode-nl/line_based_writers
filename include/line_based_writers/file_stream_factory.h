@@ -32,7 +32,7 @@ namespace crosscode::line_based_writers {
         [[nodiscard]]
         std::string handle_counter(std::string_view macro_param) const {
             if (!macro_param.empty()) {
-                int min_digits;
+                std::size_t min_digits;
                 auto[p, ec] = std::from_chars(std::data(macro_param), std::data(macro_param) + std::size(macro_param), min_digits);
                 if (ec == std::errc()) {
                     auto result = std::to_string(counter_);
