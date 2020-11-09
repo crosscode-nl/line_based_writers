@@ -80,10 +80,9 @@ namespace crosscode::line_based_writers {
         sink_type sink_;
         std::vector<std::string> buffer_;
     public:
-        template <typename Tbuffer_size, typename ...Args>
-        explicit line_buffer(Tbuffer_size buffer_size, Args&&... args) : buffer_size_{buffer_size}, sink_{std::forward<Args>(args)...} {}
-        template <typename Tbuffer_size>
-        explicit line_buffer(Tbuffer_size buffer_size) : buffer_size_{buffer_size} {}
+        template <typename ...Args>
+        explicit line_buffer(std::size_t buffer_size, Args&&... args) : buffer_size_{buffer_size}, sink_{std::forward<Args>(args)...} {}
+        explicit line_buffer(std::size_t buffer_size) : buffer_size_{buffer_size} {}
         line_buffer(line_buffer<sink_type>&&) noexcept = default;
         line_buffer(const line_buffer<sink_type>&) noexcept = delete;
         line_buffer<sink_type>&operator=(const line_buffer<sink_type>&) = delete;
@@ -119,10 +118,9 @@ namespace crosscode::line_based_writers {
         line_buffer<Tline_based_iterator_sink> lb_;
         std::unique_ptr<std::mutex> mutex_;
     public:
-        template <typename Tbuffer_size, typename ...Args>
-        explicit line_buffer_ts(Tbuffer_size buffer_size, Args&&... args) : lb_{buffer_size, std::forward<Args>(args)...}, mutex_{std::make_unique<std::mutex>()} {}
-        template <typename Tbuffer_size>
-        explicit line_buffer_ts(Tbuffer_size buffer_size) : lb_{buffer_size}, mutex_{std::make_unique<std::mutex>()} {}
+        template <typename ...Args>
+        explicit line_buffer_ts(std::size_t buffer_size, Args&&... args) : lb_{buffer_size, std::forward<Args>(args)...}, mutex_{std::make_unique<std::mutex>()} {}
+        explicit line_buffer_ts(std::size_t buffer_size) : lb_{buffer_size}, mutex_{std::make_unique<std::mutex>()} {}
         line_buffer_ts(line_buffer_ts<sink_type>&&) noexcept = default;
         line_buffer_ts(const line_buffer_ts<sink_type>&) noexcept = delete;
         line_buffer_ts<sink_type>&operator=(const line_buffer<sink_type>&) = delete;
@@ -145,7 +143,14 @@ namespace crosscode::line_based_writers {
         }
     };
 
+    /// segmented_line_based_file_writer is class of type line_buffer<batch_stream_writer<file_stream_factory>>
+    /// The first constructor parameter contains the buffer size of type std::size_t
+    /// The second constructor parameter filename_tpl of type std::string_view, containing the path and filename template to write the output to.
     using segmented_line_based_file_writer = line_buffer<batch_stream_writer<file_stream_factory>>;
+
+    /// segmented_line_based_file_writer_ts is class of type line_buffer_ts<batch_stream_writer<file_stream_factory>>, a thread safe version of segmented_line_based_file_writer
+    /// The first constructor parameter contains the buffer size of type std::size_t
+    /// The second constructor parameter filename_tpl of type std::string_view, containing the path and filename template to write the output to.
     using segmented_line_based_file_writer_ts = line_buffer_ts<batch_stream_writer<file_stream_factory>>;
 
 }
