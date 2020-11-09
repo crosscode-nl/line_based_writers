@@ -25,8 +25,8 @@ namespace crosscode::line_based_writers {
         template <typename ...Args>
         explicit stream_writer(Args&&... args) : sink_{std::forward<Args>(args)...} {}
         stream_writer() = default;
-        stream_writer(stream_writer<sink_type>&&) noexcept = default;
-        stream_writer(const stream_writer<sink_type>&) noexcept = delete;
+        stream_writer(stream_writer<sink_type>&& rhs) noexcept : sink_{std::move(rhs.sink_)} {}
+        stream_writer(const stream_writer<sink_type>&) = delete;
         stream_writer<sink_type>&operator=(const stream_writer<sink_type>&) = delete;
 
         template<typename Tline>
@@ -50,8 +50,8 @@ namespace crosscode::line_based_writers {
         template <typename ...Args>
         explicit batch_stream_writer(Args&&... args) : line_writer_factory_{std::forward<Args>(args)...} {}
         batch_stream_writer() = default;
-        batch_stream_writer(batch_stream_writer<line_writer_factory>&&) noexcept = default;
-        batch_stream_writer(const batch_stream_writer<line_writer_factory>&) noexcept = delete;
+        batch_stream_writer(batch_stream_writer<line_writer_factory>&& rhs) noexcept : line_writer_factory_{std::move(rhs.line_writer_factory_)} {}
+        batch_stream_writer(const batch_stream_writer<line_writer_factory>&) = delete;
         batch_stream_writer<line_writer_factory>&operator=(const batch_stream_writer<line_writer_factory>&) = delete;
 
         template<typename Iter>
@@ -83,8 +83,8 @@ namespace crosscode::line_based_writers {
         template <typename ...Args>
         explicit line_buffer(std::size_t buffer_size, Args&&... args) : buffer_size_{buffer_size}, sink_{std::forward<Args>(args)...} {}
         explicit line_buffer(std::size_t buffer_size) : buffer_size_{buffer_size} {}
-        line_buffer(line_buffer<sink_type>&&) noexcept = default;
-        line_buffer(const line_buffer<sink_type>&) noexcept = delete;
+        line_buffer(line_buffer<sink_type>&& rhs) noexcept : buffer_size_{rhs.buffer_size_}, sink_{std::move(rhs.sink_)}, buffer_{std::move(rhs.buffer_)} {}
+        line_buffer(const line_buffer<sink_type>&) = delete;
         line_buffer<sink_type>&operator=(const line_buffer<sink_type>&) = delete;
 
         template<typename Tline>
@@ -121,8 +121,8 @@ namespace crosscode::line_based_writers {
         template <typename ...Args>
         explicit line_buffer_ts(std::size_t buffer_size, Args&&... args) : lb_{buffer_size, std::forward<Args>(args)...}, mutex_{std::make_unique<std::mutex>()} {}
         explicit line_buffer_ts(std::size_t buffer_size) : lb_{buffer_size}, mutex_{std::make_unique<std::mutex>()} {}
-        line_buffer_ts(line_buffer_ts<sink_type>&&) noexcept = default;
-        line_buffer_ts(const line_buffer_ts<sink_type>&) noexcept = delete;
+        line_buffer_ts(line_buffer_ts<sink_type>&& rhs) noexcept : lb_{std::move(rhs.lb_)}, mutex_{std::move(rhs.mutex_)} {}
+        line_buffer_ts(const line_buffer_ts<sink_type>&) = delete;
         line_buffer_ts<sink_type>&operator=(const line_buffer<sink_type>&) = delete;
 
         template<typename Tline>

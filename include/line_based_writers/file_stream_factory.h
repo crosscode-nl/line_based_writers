@@ -107,8 +107,8 @@ namespace crosscode::line_based_writers {
         template <typename ...Args>
         explicit file_stream_factory_template(Args&&... args) : file_name_generator_{std::forward<Args>(args)...} {}
         file_stream_factory_template() = default;
-        file_stream_factory_template(file_stream_factory_template<file_name_generator_type,stream_type>&&) noexcept = default;
-        file_stream_factory_template(const file_stream_factory_template<file_name_generator_type,stream_type>&) noexcept = delete;
+        file_stream_factory_template(file_stream_factory_template<file_name_generator_type,stream_type>&& rhs) noexcept : file_name_generator_{std::move(rhs.file_name_generator_)}, stream_(std::move(rhs.stream_)) { }
+        file_stream_factory_template(const file_stream_factory_template<file_name_generator_type,stream_type>&) = delete;
         file_stream_factory_template<file_name_generator_type,stream_type>&operator=(const file_stream_factory_template<file_name_generator_type,stream_type>&) = delete;
 
         /// begin is called when a new stream should be created.
