@@ -37,7 +37,7 @@ namespace crosscode::line_based_writers {
                 if (ec == std::errc()) {
                     auto result = std::to_string(counter_);
                     min_digits -= std::size(result);
-                    if (min_digits > 0) {
+                    if (min_digits > std::size_t{0}) {
                         result = std::string(min_digits, '0') + result;
                     }
                     return result;
