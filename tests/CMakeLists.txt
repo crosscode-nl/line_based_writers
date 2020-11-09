@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8.2)
-project(line_base_writers_tests
+project(line_based_writers_tests
         VERSION 0.1.0
         LANGUAGES C CXX
         )
