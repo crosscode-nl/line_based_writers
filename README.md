@@ -6,6 +6,9 @@
 [![Standard](https://img.shields.io/badge/c%2B%2B-17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+Note: I really want lgtm to work, but they seem to support a really old version of CMake. I have to check in the future if they started supporting a more modern version of CMake.
+ 
+
 ## Introduction
 
 Line based writers provide template classes for writing lines from [influxdblpexporter](https://github.com/crosscode-nl/influxdblpexporter) to files. 
