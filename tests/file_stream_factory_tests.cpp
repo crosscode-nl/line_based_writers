@@ -11,11 +11,21 @@ using namespace std::literals;
 struct fake_stream : public std::stringstream  {
     using std::stringstream::stringstream;
     std::string last_file_name;
+    bool is_open=false;
+    bool is_clear=true;
     ios_base::openmode last_open_mode{};
     void open(const std::string& file_name, ios_base::openmode mode = ios_base::out) {
         str("");
         last_file_name = file_name;
         last_open_mode = mode;
+        is_open = true;
+        is_clear = false;
+    }
+    void close() {
+        is_open = false;
+    }
+    void clear() {
+        is_clear = true;
     }
 
 };
@@ -28,9 +38,13 @@ TEST_SUITE("File stream factory tests") {
         tfsf.begin();
         REQUIRE("/tmp/test-0000.txt"==tfsf.underlying_stream().last_file_name);
         REQUIRE((std::ios::trunc|std::ios::binary|std::ios_base::out)==tfsf.underlying_stream().last_open_mode);
+        REQUIRE(true==tfsf.underlying_stream().is_open);
+        REQUIRE(false==tfsf.underlying_stream().is_clear);
         tfsf.write("test1");
         tfsf.write("test2");
         tfsf.commit();
+        REQUIRE(false==tfsf.underlying_stream().is_open);
+        REQUIRE(true==tfsf.underlying_stream().is_clear);
         REQUIRE("test1\ntest2\n"==tfsf.underlying_stream().str());
         REQUIRE("/tmp/test-0000.txt"==tfsf.underlying_stream().last_file_name);
         REQUIRE((std::ios::trunc|std::ios::binary|std::ios_base::out)==tfsf.underlying_stream().last_open_mode);

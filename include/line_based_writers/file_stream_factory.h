@@ -127,6 +127,8 @@ namespace crosscode::line_based_writers {
         /// commit is called when writing to the stream has been completed
         void commit() {
             stream_.flush();
+            stream_.close();
+            stream_.clear();
         }
 
 #ifdef CROSSCODE_ACCESS_TO_UNIT_TEST
