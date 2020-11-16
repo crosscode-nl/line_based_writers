@@ -5,6 +5,7 @@
 #include "macro_tool.h"
 #include <chrono>
 #include <charconv>
+#include <ctime>
 
 namespace crosscode::line_based_writers {
 
@@ -13,15 +14,33 @@ namespace crosscode::line_based_writers {
     template <auto now=std::chrono::system_clock::now>
     struct macro_handler {
         std::size_t counter_;
+        std::time_t time_;
 
         /// begin_render is called before a macro rendition of a string
         /// Can be used to fix values like date time or create resources.
-        static void begin_render() {}
+        void begin_render() {
+            time_ = std::chrono::system_clock::to_time_t(now());
+        }
 
         /// done_render is called after a macro rendition of a string
         /// Could be used to increment counters or clean up resources.
         void done_render() {
             counter_++;
+        }
+
+        template <typename T>
+        static std::string number_to_string(const T& input, std::size_t min_digits) {
+            auto result = std::to_string(input);
+            auto size_result = std::size(result);
+            if (min_digits>=size_result) {
+                min_digits -= size_result;
+            } else {
+                min_digits={};
+            }
+            if (min_digits > std::size_t{}) {
+                result = std::string(min_digits, '0') + result;
+            }
+            return result;
         }
 
         /// handle_counter handles the counter macro (COUNTER and NUM)
@@ -35,15 +54,16 @@ namespace crosscode::line_based_writers {
                 std::size_t min_digits;
                 auto[p, ec] = std::from_chars(std::data(macro_param), std::data(macro_param) + std::size(macro_param), min_digits);
                 if (ec == std::errc()) {
-                    auto result = std::to_string(counter_);
-                    min_digits -= std::size(result);
-                    if (min_digits > std::size_t{0}) {
-                        result = std::string(min_digits, '0') + result;
-                    }
-                    return result;
+                    return number_to_string(counter_,min_digits);
                 }
             }
-            return std::to_string(counter_);
+            return number_to_string(counter_,1);
+        }
+
+        std::string handle_date(const std::string& format) const {
+            char buf[16]{};
+            strftime(buf,16,format.c_str(),std::gmtime(&time_));
+            return buf;
         }
 
         /// macro_handler constructor Constructs a macro handler. The counter parameter determines the initial value of the counter.
@@ -60,6 +80,15 @@ namespace crosscode::line_based_writers {
         std::string handle(std::string_view macro_name, std::string_view macro_param) const {
             if (macro_name=="COUNTER") return handle_counter(macro_param);
             if (macro_name=="NUM") return handle_counter(macro_param);
+            if (macro_name=="YEAR") return handle_date("%Y");
+            if (macro_name=="MONTH") return handle_date("%m");
+            if (macro_name=="DAY") return handle_date("%d");
+            if (macro_name=="HOUR") return handle_date("%H");
+            if (macro_name=="MINUTE") return handle_date("%M");
+            if (macro_name=="SECOND") return handle_date("%S");
+            if (macro_name=="MILLISECOND") return handle_date("%Y");
+            if (macro_name=="MICROSECOND") return handle_date("%Y");
+            if (macro_name=="NANOSECOND") return handle_date("%Y");
             return {};
         }
 
