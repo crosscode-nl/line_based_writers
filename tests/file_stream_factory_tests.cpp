@@ -30,6 +30,11 @@ struct fake_stream : public std::stringstream  {
 
 };
 
+
+std::chrono::system_clock::time_point fake_now() {
+    return std::chrono::system_clock::time_point{134055123456789ns};
+}
+
 using testable_file_stream_factory = lbw::file_stream_factory_no_stream<fake_stream>;
 
 TEST_SUITE("File stream factory tests") {
@@ -96,10 +101,40 @@ TEST_SUITE("File stream factory tests") {
         }
     }
     TEST_CASE("Can create file_name_generator with template and retrieve current year."){
-        lbw::file_name_generator fng("/tmp/test-%YEAR%.txt");
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%YEAR%.txt");
+        REQUIRE("/tmp/test-1970.txt"==fng.generate());
     }
-    TEST_CASE("Can create file_name_generator with template and retrieve current year."){
-        lbw::file_name_generator fng("/tmp/test-%MONTH%.txt");
+    TEST_CASE("Can create file_name_generator with template and retrieve current month."){
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%MONTH%.txt");
+        REQUIRE("/tmp/test-01.txt"==fng.generate());
+    }
+    TEST_CASE("Can create file_name_generator with template and retrieve current day."){
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%DAY%.txt");
+        REQUIRE("/tmp/test-02.txt"==fng.generate());
+    }
+    TEST_CASE("Can create file_name_generator with template and retrieve current hour."){
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%HOUR%.txt");
+        REQUIRE("/tmp/test-13.txt"==fng.generate());
+    }
+    TEST_CASE("Can create file_name_generator with template and retrieve current minute."){
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%MINUTE%.txt");
+        REQUIRE("/tmp/test-15.txt"==fng.generate());
+    }
+    TEST_CASE("Can create file_name_generator with template and retrieve current second."){
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%SECOND%.txt");
+        REQUIRE("/tmp/test-16.txt"==fng.generate());
+    }
+    TEST_CASE("Can create file_name_generator with template and retrieve current milliseconds."){
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%MILLISECONDS%.txt");
+        REQUIRE("/tmp/test-123.txt"==fng.generate());
+    }
+    TEST_CASE("Can create file_name_generator with template and retrieve current microseconds."){
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%MICROSECONDS%.txt");
+        REQUIRE("/tmp/test-123456.txt"==fng.generate());
+    }
+    TEST_CASE("Can create file_name_generator with template and retrieve current nanoseconds."){
+        lbw::file_name_generator<fake_now> fng("/tmp/test-%NANOSECONDS%.txt");
+        REQUIRE("/tmp/test-123456789.txt"==fng.generate());
     }
 }
 
