@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Version 1.3.0 - 2020-11-16 - More filename template macros 
+
+### Added
+
+* Support for YEAR, MONTH, DAY, HOUR, MINUTE, SECOND in filename template
+
 ## Version 1.2.0 - 2020-11-16 - Bug fixes
 
 ### Changed

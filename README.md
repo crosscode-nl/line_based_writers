@@ -54,7 +54,7 @@ include(FetchContent)
 FetchContent_Declare(
         line_based_writers
         GIT_REPOSITORY https://github.com/crosscode-nl/line_based_writers
-        GIT_TAG v1.2.0
+        GIT_TAG v1.3.0
 )
 FetchContent_MakeAvailable(line_based_writers)
 target_link_libraries(${PROJECT_NAME} line_based_writers)
@@ -73,7 +73,7 @@ include(FetchContent)
 FetchContent_Declare(
         line_based_writers
         GIT_REPOSITORY https://github.com/crosscode-nl/line_based_writers
-        GIT_TAG v1.2.0
+        GIT_TAG v1.3.0
 )
 FetchContent_MakeAvailable(line_based_writers)
 target_link_libraries(${PROJECT_NAME} line_based_writers)
@@ -138,7 +138,7 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 To use an installed library you just have to add: 
 
 ```cmake
-find_package(LineBasedWriters 1.2.0 REQUIRED)
+find_package(LineBasedWriters 1.3.0 REQUIRED)
 target_link_libraries(${PROJECT_NAME} LineBasedWriters::line_based_writers)
 ```
 
@@ -151,7 +151,7 @@ project(example)
 add_executable(${PROJECT_NAME} main.cpp)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
-find_package(LineBasedWriters 1.2.0 REQUIRED)
+find_package(LineBasedWriters 1.3.0 REQUIRED)
 target_link_libraries(${PROJECT_NAME} LineBasedWriters::line_based_writers)
 ```
 
