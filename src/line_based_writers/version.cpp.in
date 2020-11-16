@@ -2,7 +2,12 @@
 
 using namespace std::literals;
 
+namespace crosscode::line_based_writers {
+
 std::string_view version() {
+
 constexpr std::string_view version_value = "@CMAKE_PROJECT_VERSION@"sv;
 return version_value;
+}
+
 }

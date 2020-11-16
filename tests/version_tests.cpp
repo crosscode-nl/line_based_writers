@@ -3,6 +3,8 @@
 #include <regex>
 using namespace std::literals;
 
+using namespace crosscode::line_based_writers;
+
 TEST_SUITE("Version tests") {
     TEST_CASE ("Test if version is valid semver") {
         // Regex came from: semver.org
