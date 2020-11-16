@@ -124,17 +124,5 @@ TEST_SUITE("File stream factory tests") {
         lbw::file_name_generator<fake_now> fng("/tmp/test-%SECOND%.txt");
         REQUIRE("/tmp/test-15.txt"==fng.generate());
     }
-    TEST_CASE("Can create file_name_generator with template and retrieve current milliseconds."){
-        lbw::file_name_generator<fake_now> fng("/tmp/test-%MILLISECONDS%.txt");
-        REQUIRE("/tmp/test-123.txt"==fng.generate());
-    }
-    TEST_CASE("Can create file_name_generator with template and retrieve current microseconds."){
-        lbw::file_name_generator<fake_now> fng("/tmp/test-%MICROSECONDS%.txt");
-        REQUIRE("/tmp/test-123456.txt"==fng.generate());
-    }
-    TEST_CASE("Can create file_name_generator with template and retrieve current nanoseconds."){
-        lbw::file_name_generator<fake_now> fng("/tmp/test-%NANOSECONDS%.txt");
-        REQUIRE("/tmp/test-123456789.txt"==fng.generate());
-    }
 }
 

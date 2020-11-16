@@ -12,22 +12,16 @@ namespace crosscode::line_based_writers {
     /// macro_handler contains logic for handling macros encountered during filename rendering.
     /// \tparam now The function to use for retrieving the current time. Replaceable to enable unit tests.
     template <auto now=std::chrono::system_clock::now>
-    struct macro_handler {
+    class macro_handler {
         std::size_t counter_;
+        std::chrono::system_clock::time_point current_time_point_;
         std::time_t time_;
 
-        /// begin_render is called before a macro rendition of a string
-        /// Can be used to fix values like date time or create resources.
-        void begin_render() {
-            time_ = std::chrono::system_clock::to_time_t(now());
-        }
-
-        /// done_render is called after a macro rendition of a string
-        /// Could be used to increment counters or clean up resources.
-        void done_render() {
-            counter_++;
-        }
-
+        /// number_to_string converts a numeric type to a string
+        /// \tparam T the type of the input parameter
+        /// \param input A numeric or integral type
+        /// \param min_digits Number of digits that are required. Will be prefixed with 0 if amount of digits is not met.
+        /// \return A string containing the numeric or integral value.
         template <typename T>
         static std::string number_to_string(const T& input, std::size_t min_digits) {
             auto result = std::to_string(input);
@@ -60,16 +54,33 @@ namespace crosscode::line_based_writers {
             return number_to_string(counter_,1);
         }
 
+        /// handle_date handles a date parameter
+        /// \param format contain the formatting string to use to handle the date.
+        /// \return A string containing the date.
+        [[nodiscard]]
         std::string handle_date(const std::string& format) const {
             char buf[16]{};
             strftime(buf,16,format.c_str(),std::gmtime(&time_));
             return buf;
         }
 
+        public:
         /// macro_handler constructor Constructs a macro handler. The counter parameter determines the initial value of the counter.
         /// \param counter
-        explicit macro_handler(std::size_t counter) : counter_{counter} {}
-        [[nodiscard]]
+        explicit macro_handler(std::size_t counter) : counter_{counter}, current_time_point_{now()}, time_{std::chrono::system_clock::to_time_t(current_time_point_)} {}
+
+        /// begin_render is called before a macro rendition of a string
+        /// Can be used to fix values like date time or create resources.
+        void begin_render() {
+            current_time_point_ = now();
+            time_ = std::chrono::system_clock::to_time_t(current_time_point_);
+        }
+
+        /// done_render is called after a macro rendition of a string
+        /// Could be used to increment counters or clean up resources.
+        void done_render() {
+            counter_++;
+        }
 
         /// Handle will handle a macro
         /// It will delegate the call to specific methods that implement handling a certain macro.
@@ -77,7 +88,7 @@ namespace crosscode::line_based_writers {
         /// \param macro_name The name of the macro
         /// \param macro_param The parameter of the macro
         /// \return The replacement string for the macro
-        std::string handle(std::string_view macro_name, std::string_view macro_param) const {
+        [[nodiscard]] std::string handle(std::string_view macro_name, std::string_view macro_param) const {
             if (macro_name=="COUNTER") return handle_counter(macro_param);
             if (macro_name=="NUM") return handle_counter(macro_param);
             if (macro_name=="YEAR") return handle_date("%Y");
@@ -86,11 +97,10 @@ namespace crosscode::line_based_writers {
             if (macro_name=="HOUR") return handle_date("%H");
             if (macro_name=="MINUTE") return handle_date("%M");
             if (macro_name=="SECOND") return handle_date("%S");
-            if (macro_name=="MILLISECOND") return handle_date("%Y");
-            if (macro_name=="MICROSECOND") return handle_date("%Y");
-            if (macro_name=="NANOSECOND") return handle_date("%Y");
             return {};
         }
+
+
 
     };
 
